@@ -4,31 +4,28 @@ services:
     container_name: resourcespace
     restart: unless-stopped
     depends_on:
-      - mariadb
+      - resourcespace-db
     volumes:
-      - filestore:/var/www/html/filestore
+      - /mnt/large_storage/resourcespace:/var/www/html/filestore
       - ./config.php:/var/www/html/include/config.php
     networks:
-      - frontend
-      - backend
+      - resourcespace-net
     ports:
-      - "80:80"
+      - "8085:80"
 
-  mariadb:
-    image: mariadb
-    container_name: mariadb
+  resourcespace-db:
+    image: mariadb:10.11
+    container_name: resourcespace-db
     restart: unless-stopped
     env_file:
       - db.env
     volumes:
-      - mariadb:/var/lib/mysql
+      - resourcespace_db_data:/var/lib/mysql
     networks:
-      - backend
+      - resourcespace-net
 
 networks:
-  frontend:
-  backend:
+  resourcespace-net:
 
 volumes:
-  mariadb:
-  filestore:
+  resourcespace_db_data:
